@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-chatbot-backend
+  labels:
+    app: todo-chatbot-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo-chatbot-backend
+  template:
+    metadata:
+      labels:
+        app: todo-chatbot-backend
+    spec:
+      containers:
+      - name: backend
+        image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+        imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DATABASE_URL
+          value: "{{ .Values.backend.databaseUrl }}"
+        - name: OPENROUTER_API_KEY
+          value: "{{ .Values.backend.openrouter.apiKey }}"
+        - name: OPENROUTER_MODEL
+          value: "{{ .Values.backend.openrouter.model }}"
+        - name: OPENROUTER_BASE_URL
+          value: "{{ .Values.backend.openrouter.baseUrl }}"
+        - name: JWT_SECRET
+          value: "{{ .Values.backend.jwtSecret }}"
+        - name: BETTER_AUTH_SECRET
+          value: "{{ .Values.backend.authSecret }}"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10

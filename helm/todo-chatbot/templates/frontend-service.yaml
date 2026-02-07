@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: todo-chatbot-frontend
+  labels:
+    app: todo-chatbot-frontend
+spec:
+  type: NodePort  # Using NodePort for Minikube access
+  selector:
+    app: todo-chatbot-frontend
+  ports:
+  - port: 80
+    targetPort: 3000
+    protocol: TCP
+    name: http

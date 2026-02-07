@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: todo-chatbot-backend
+  labels:
+    app: todo-chatbot-backend
+spec:
+  type: ClusterIP  # Internal service only
+  selector:
+    app: todo-chatbot-backend
+  ports:
+  - port: 8000
+    targetPort: 8000
+    protocol: TCP
+    name: http

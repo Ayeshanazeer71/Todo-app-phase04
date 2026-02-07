@@ -1,0 +1,5 @@
+monorepo_root: .
+
+phases:
+  - name: phase3-chatbot
+    features: [task-crud, authentication, chatbot]

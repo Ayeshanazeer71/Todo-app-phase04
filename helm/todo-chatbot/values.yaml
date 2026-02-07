@@ -1,0 +1,50 @@
+# Default values for todo-chatbot
+
+frontend:
+  image:
+    repository: todo-chatbot-frontend
+    tag: latest
+    pullPolicy: Never  # Use local images only
+  replicaCount: 2
+  # API URL for browser (use when accessing via port-forward: http://localhost:8000)
+  nextPublicApiUrl: "http://localhost:8000"
+
+backend:
+  image:
+    repository: todo-chatbot-backend
+    tag: latest
+    pullPolicy: Never  # Use local images only
+  replicaCount: 1
+  # Neon PostgreSQL (override with Secret in production)
+  databaseUrl: "postgresql://neondb_owner:npg_v7JqWkVLAs1X@ep-cold-voice-aipz64az-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require"
+  # OpenRouter (used instead of OpenAI)
+  openrouter:
+    apiKey: "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"
+    model: "openai/gpt-4o-mini"
+    baseUrl: "https://openrouter.ai/api/v1"
+  jwtSecret: "6beb1da391924eb87465cfd6943bb53597da191abb99b34b7ac3bf0e2b391978"
+  authSecret: "f927898c0601f135449ac12e8bdafa1c33afc9a737eee9ce6f738ae5ae8925ed"
+
+service:
+  frontend:
+    type: NodePort
+    port: 80
+  backend:
+    type: ClusterIP
+    port: 8000
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+probes:
+  readiness:
+    initialDelaySeconds: 10
+    periodSeconds: 5
+  liveness:
+    initialDelaySeconds: 30
+    periodSeconds: 10
